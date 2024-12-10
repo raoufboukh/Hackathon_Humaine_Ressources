@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,21 +44,24 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_mongoengine',
-    
     'rest_framework_simplejwt',
-    
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django_mongoengine.mongo_auth.backends.MongoEngineBackend',
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 MIDDLEWARE = [
+   'corsheaders.middleware.CorsMiddleware',  # Ensure this is at the top
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,7 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'hr_system.urls'
@@ -73,6 +77,7 @@ ROOT_URLCONF = 'hr_system.urls'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TEMPLATES = [
     {
@@ -123,18 +128,12 @@ connect(db=MONGODB_NAME, host=MONGODB_HOST, port=MONGODB_PORT)
 
 #JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Adjust as needed
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
 # Password validation
