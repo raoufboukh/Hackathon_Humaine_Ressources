@@ -1,11 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import User
 from decimal import Decimal
+
+from employees.models import Attendance, Employee
 from .calculators import SalaireCalculator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
+class Attendance(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    clock_in = models.DateTimeField()
+    clock_out = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('present', 'Present'),
+            ('absent', 'Absent'),
+            ('late', 'Late'),
+        ],
+        default='present'
+    )
+
+    def calculate_hours_worked(self):
+        if not self.clock_out:
+            return 0
+        delta = self.clock_out - self.clock_in
+        return round(delta.total_seconds() / 3600, 2)
+
+    def __str__(self):
+        return f"{self.employee} - {self.clock_in.date()}"
+    
 class LeaveType(models.Model):
     name = models.CharField(max_length=100)
     days_allowed = models.PositiveIntegerField()
@@ -106,6 +131,32 @@ class Payroll(models.Model):
 
     def __str__(self):
         return f"Payroll for {self.user.username}"
+    def calculate_hours_and_overtime(self):
+        attendances = Attendance.objects.filter(
+            employee=self.employee,
+            clock_in__date__range=[self.period_start, self.period_end]
+        )
+        total_hours = sum(att.calculate_hours_worked() for att in attendances)
+        total_overtime = sum(att.calculate_overtime_hours() for att in attendances)
+        return total_hours, total_overtime
+
+    def calculate_net_salary(self):
+        total_hours, overtime_hours = self.calculate_hours_and_overtime()
+        regular_hours = total_hours - overtime_hours
+        
+        # Calculate regular pay
+        hourly_rate = self.base_salary / (8 * 22)  # Assuming 22 working days
+        regular_pay = regular_hours * hourly_rate
+        
+        # Calculate overtime pay
+        overtime_pay = overtime_hours * self.overtime_rate
+        
+        gross_salary = regular_pay + overtime_pay
+        total_deductions = self.deductions + self.taxes
+        
+        self.overtime_hours = overtime_hours
+        self.net_salary = gross_salary - total_deductions
+        return self.net_salary
 
 class PayrollDetail(models.Model):
     payroll = models.ForeignKey(Payroll, on_delete=models.CASCADE)

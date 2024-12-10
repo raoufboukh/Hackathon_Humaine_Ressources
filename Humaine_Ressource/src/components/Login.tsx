@@ -1,36 +1,64 @@
+import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = {
+      username,
+      password,
+    };
+    console.log("Submitting data:", data); // Vérifier les données envoyées
+    axios
+      .post("http://127.0.0.1:8000/api/auth/login/", data)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.username === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/employee");
+        }
+      })
+      .catch((err) => {
+        console.error(err.response?.data || err.message); // Afficher l'erreur plus précisément
+      });
+  };
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="bg-white shadow-lg rounded-3xl p-8 w-96">
         <div className="flex items-center justify-center mb-8">
           <img src="./src/assets/Logo.png" className="w-40" alt="Logo" />
         </div>
-        <div className="loginForm">
+        <form className="loginForm" onSubmit={handleSubmit}>
           <h2 className="text-3xl font-bold text-center mb-8">Login</h2>
           <div className="relative w-full mx-auto my-4">
             <label
-              htmlFor="email"
-              className="absolute top-2 left-4 text-sm text-gray-400 "
+              htmlFor="username"
+              className="absolute top-2 left-4 text-sm text-gray-400"
             >
-              Email
+              Username
             </label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pt-6 pb-2 px-4 text-gray-800  rounded-lg shadow-md outline-none border-2 border-gray-300 focus:border-blue-600"
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setUsername(e.target.value)
+              }
+              className="w-full pt-6 pb-2 px-4 text-gray-800 rounded-lg shadow-md outline-none border-2 border-gray-300 focus:border-blue-600"
             />
           </div>
 
           <div className="relative w-full mx-auto my-4">
             <label
               htmlFor="password"
-              className="absolute top-2 left-4 text-sm text-gray-400 "
+              className="absolute top-2 left-4 text-sm text-gray-400"
             >
               Password
             </label>
@@ -38,8 +66,10 @@ const Login = () => {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full pt-6 pb-2 px-4 text-gray-800  rounded-lg shadow-md outline-none border-2 border-gray-300 focus:border-blue-600"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              }
+              className="w-full pt-6 pb-2 px-4 text-gray-800 rounded-lg shadow-md outline-none border-2 border-gray-300 focus:border-blue-600"
             />
           </div>
 
@@ -62,12 +92,12 @@ const Login = () => {
           </button>
 
           <p className="text-blue-600 text-sm ml-2 cursor-pointer hover:underline my-5">
-            Forget Password ?
+            Forget Password?
           </p>
-        </div>
+        </form>
 
         <p className="text-center text-sm text-gray-400 mt-10">
-          &copy; 2024 MelinIQ HR Corporation . All Rights Reserved
+          &copy; 2024 MelinIQ HR Corporation. All Rights Reserved.
         </p>
       </div>
     </div>

@@ -12,6 +12,10 @@ import Performance from "./components/Employee/Performance";
 import Profile from "./components/Employee/Profile";
 import Support from "./components/Employee/Support";
 import Login from "./components/Login";
+import Contact from "./components/Contact";
+import Service from "./components/Service";
+import About from "./components/About";
+import Admin from "./components/Admin/Admin";
 
 function App() {
   return (
@@ -36,6 +40,12 @@ function App() {
         <Route path="/employee/performance" element={<Performance />} />
         <Route path="/employee/profile" element={<Profile />} />
         <Route path="/employee/support" element={<Support />} />
+
+        <Route path="/Contact" element={<Contact />} />
+        <Route path="/Service" element={<Service />} />
+        <Route path="/About" element={<About />} />
+        <Route path="/admin" element={<Admin />} />
+
         <Route path="/login" element={<Login />} />
       </Routes>
       {/* )} */}
