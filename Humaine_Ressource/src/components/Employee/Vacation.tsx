@@ -8,52 +8,13 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { MdOutlineSettings } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 import { FaArrowRight } from "react-icons/fa";
+import Dashboard from "./Dashboard";
 // import { PiWarningOctagon } from "react-icons/pi";
 
 const Vacation = () => {
   return (
     <section className="flex">
-      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen">
-        <div className="flex gap-2 items-center">
-          <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
-            <FaUser className="w-7 h-7" />
-          </div>
-          <div className="">
-            <h2 className="font-bold text-lg">Marie Dupont</h2>
-            <p className="">Employee</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-12">
-          <ul className="pt-10">
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <CgHome /> Dashboard
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <IoDocumentTextSharp /> Document
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <CiCalendar /> Vacation
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <RiBarChartFill /> Performance
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <LuMessageCircle /> Support
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <FaUser /> Profile
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <MdOutlineSettings /> Settings
-            </li>
-          </ul>
-          <ul className="">
-            <li className="flex gap-3 items-center cursor-pointer text-[20px]">
-              <IoLogOut /> Logout
-            </li>
-          </ul>
-        </div>
-      </div>
+      <Dashboard />
       <div className="basis-[78%] container py-10">
         <div className="flex items-center justify-between">
           <h1 className="font-black text-3xl">Vacations</h1>

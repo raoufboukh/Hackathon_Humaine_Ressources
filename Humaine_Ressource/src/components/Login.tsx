@@ -43,8 +43,6 @@ const Login = () => {
             />
           </div>
 
-          {/*zbi*/}
-
           <div className="relative w-full mx-auto my-4">
             <input
               type="checkbox"
