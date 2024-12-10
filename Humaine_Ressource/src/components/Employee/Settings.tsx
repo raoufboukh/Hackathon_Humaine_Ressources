@@ -1,10 +1,5 @@
-import { CgHome } from "react-icons/cg";
-import { CiCalendar } from "react-icons/ci";
-import { FaUser } from "react-icons/fa";
-import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
-import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
-import { RiBarChartFill } from "react-icons/ri";
+
 import { Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
 // import { Switch } from "@/components/ui/switch";

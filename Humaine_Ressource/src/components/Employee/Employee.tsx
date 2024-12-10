@@ -1,12 +1,5 @@
-import { FaUser } from "react-icons/fa";
-import { CgHome } from "react-icons/cg";
-import { IoDocumentTextSharp } from "react-icons/io5";
-import { CiCalendar } from "react-icons/ci";
-import { RiBarChartFill } from "react-icons/ri";
-import { LuMessageCircle } from "react-icons/lu";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { MdOutlineSettings } from "react-icons/md";
-import { IoLogOut } from "react-icons/io5";
+
 import { FaArrowRight } from "react-icons/fa";
 import { PiWarningOctagon } from "react-icons/pi";
 import Dashboard from "./Dashboard";
