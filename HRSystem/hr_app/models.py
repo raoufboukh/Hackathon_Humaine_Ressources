@@ -2,14 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from decimal import Decimal
 
-from employees.models import Attendance, Employee
+from employees.models import  Employee, LeaveRequest,  LeaveType
 from .calculators import SalaireCalculator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 class Attendance(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  # One-to-Many relationship , 
     clock_in = models.DateTimeField()
     clock_out = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
@@ -48,16 +48,16 @@ class LeaveBalance(models.Model):
         unique_together = ['user', 'leave_type', 'year']
 
 class Prime(models.Model):
-    nom = models.CharField(max_length=100)
-    montant = models.DecimalField(max_digits=10, decimal_places=2)
-    imposable = models.BooleanField()
-    cotisable = models.BooleanField()
+    name = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    taxable = models.BooleanField(default=True)
+    contributable = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nom
+        return self.name
 # Absence and Leave Management
 class LeaveRequest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='employee_leave_requests')  # added related_name to fix the clash
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -110,54 +110,75 @@ class PayrollComponent(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.get_type_display()})"
-    
+class PayrollPrime(models.Model):
+    payroll = models.ForeignKey('Payroll', on_delete=models.CASCADE)
+    prime = models.ForeignKey('Prime', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        unique_together = ['payroll', 'prime']
 # Payroll Management
 class Payroll(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    salaire_base = models.DecimalField(max_digits=10, decimal_places=2)
-    primes = models.ManyToManyField('Prime', blank=True)
-    net_salary = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
-    created_at = models.DateTimeField(default=timezone.now)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True )
+    period_start = models.DateField()
+    period_end = models.DateField()
+    base_salary = models.DecimalField(max_digits=10, decimal_places=2)
+    overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    overtime_rate = models.DecimalField(max_digits=5, decimal_places=2, default=1.5)
+    deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    taxes = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    net_salary = models.DecimalField(max_digits=10, decimal_places=2)
+    primes = models.ManyToManyField('Prime', through='PayrollPrime')
+
+    def get_attendance_records(self):
+        return Attendance.objects.filter(
+            employee=self.employee,
+            clock_in__date__range=(self.period_start, self.period_end)
+        )
+
+    def calculate_hours_and_overtime(self):
+        total_hours = Decimal('0')
+        try:
+            for record in self.get_attendance_records():
+                if record.clock_out:
+                    hours = Decimal(str(record.calculate_hours_worked()))
+                    total_hours += hours
+            
+            standard_hours = Decimal('176')  # 8 hours * 22 days
+            overtime_hours = max(Decimal('0'), total_hours - standard_hours)
+            return total_hours, overtime_hours
+        except Exception as e:
+            print(f"Error calculating hours: {e}")
+            return Decimal('0'), Decimal('0')
 
     def calculate_net_salary(self):
-        from .calculators import SalaireCalculator
-        calculator = SalaireCalculator(self.salaire_base, list(self.primes.all()))
-        return calculator.calculer_salaire_net()
+        try:
+            total_hours, overtime = self.calculate_hours_and_overtime()
+            hourly_rate = self.base_salary / Decimal('176')
+            regular_hours = total_hours - overtime
+            
+            regular_pay = regular_hours * hourly_rate
+            overtime_pay = overtime * hourly_rate * self.overtime_rate
+            
+            prime_total = self.payrollprime_set.aggregate(
+                total=models.Sum('amount'))['total'] or Decimal('0')
+            
+            gross_salary = regular_pay + overtime_pay + prime_total
+            net_salary = gross_salary - self.deductions - self.taxes
+            self.overtime_hours = overtime
+            return net_salary
+        except Exception as e:
+            print(f"Error calculating salary: {e}")
+            return self.base_salary
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.net_salary = self.calculate_net_salary()
+        if not self.net_salary:
+            self.net_salary = self.calculate_net_salary()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Payroll for {self.user.username}"
-    def calculate_hours_and_overtime(self):
-        attendances = Attendance.objects.filter(
-            employee=self.employee,
-            clock_in__date__range=[self.period_start, self.period_end]
-        )
-        total_hours = sum(att.calculate_hours_worked() for att in attendances)
-        total_overtime = sum(att.calculate_overtime_hours() for att in attendances)
-        return total_hours, total_overtime
-
-    def calculate_net_salary(self):
-        total_hours, overtime_hours = self.calculate_hours_and_overtime()
-        regular_hours = total_hours - overtime_hours
-        
-        # Calculate regular pay
-        hourly_rate = self.base_salary / (8 * 22)  # Assuming 22 working days
-        regular_pay = regular_hours * hourly_rate
-        
-        # Calculate overtime pay
-        overtime_pay = overtime_hours * self.overtime_rate
-        
-        gross_salary = regular_pay + overtime_pay
-        total_deductions = self.deductions + self.taxes
-        
-        self.overtime_hours = overtime_hours
-        self.net_salary = gross_salary - total_deductions
-        return self.net_salary
-
+        return f"Payroll for {self.employee.user.get_full_name()} ({self.period_start} to {self.period_end})"
+    
 class PayrollDetail(models.Model):
     payroll = models.ForeignKey(Payroll, on_delete=models.CASCADE)
     component = models.ForeignKey(PayrollComponent, on_delete=models.PROTECT)
@@ -204,7 +225,7 @@ class HRDocument(models.Model):
         return self.name
 
 class PerformanceReview(models.Model):
-    employee = models.ForeignKey(User, on_delete=models.CASCADE)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     reviewer = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
@@ -250,3 +271,4 @@ class Notification(models.Model):
     )
     related_object_id = models.PositiveIntegerField()
     related_object_type = models.CharField(max_length=100)
+
