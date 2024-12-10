@@ -5,7 +5,7 @@ import { MdManageAccounts } from "react-icons/md";
 const Services = () => {
   return (
     <section className="bg-buttonColor mt-10">
-      <div className="container grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 py-10">
+      <div className="container grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 py-20 my-20">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto rounded-full bg-[#d9d9d9] flex justify-center items-center">
             <IoLogOut className="w-14 h-10" />

@@ -1,28 +1,27 @@
-import { FaUser } from "react-icons/fa";
 import { CgHome } from "react-icons/cg";
-import { IoDocumentTextSharp } from "react-icons/io5";
 import { CiCalendar } from "react-icons/ci";
-import { RiBarChartFill } from "react-icons/ri";
+import { FaUser } from "react-icons/fa";
+import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
-import { IoIosNotificationsOutline } from "react-icons/io";
-// import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineSettings } from "react-icons/md";
-import { IoLogOut } from "react-icons/io5";
-const Employee = () => {
+import { RiBarChartFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
+
+export default function Doc() {
   return (
     <section className="flex">
-      <div className="bg-buttonColor basis-[25%] container py-10 text-white h-screen">
-        <div className="flex gap-2 items-center">
+      <div className="bg-buttonColor basis-[20%] py-10 text-white h-screen">
+        <div className="flex gap-2 items-center px-6">
           <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
             <FaUser className="w-7 h-7" />
           </div>
-          <div className="">
+          <div>
             <h2 className="font-bold text-lg">Marie Dupont</h2>
-            <p className="">Employee</p>
+            <p>Employee</p>
           </div>
         </div>
-        <div className="flex flex-col gap-12">
-          <ul className="pt-10">
+        <div className="flex flex-col justify-between h-[calc(100%-100px)]">
+          <ul className="pt-10 px-6">
             <li className="py-3 flex gap-3 items-center cursor-pointer text-[22px]">
               <CgHome /> Dashboard
             </li>
@@ -45,21 +44,33 @@ const Employee = () => {
               <MdOutlineSettings /> Settings
             </li>
           </ul>
-          <ul className="">
+          <ul className="px-6">
             <li className="flex gap-3 items-center cursor-pointer text-[22px]">
               <IoLogOut /> Logout
             </li>
           </ul>
         </div>
       </div>
-      <div className="basis-[75%] container py-10">
-        <div className="flex items-center justify-between">
-          <h1 className="font-black text-3xl">Hello Marie Dupont!</h1>
-          <IoIosNotificationsOutline className="text-4xl cursor-pointer" />
+
+      <div className="flex-1 flex items-center justify-center">
+        <div className="w-full max-w-md space-y-6">
+          <h1 className="text-2xl font-bold text-center">Documents</h1>
+          <div className="space-y-4">
+            <Link
+              to="/Doc/payment-file"
+              className="flex items-center justify-between bg-white p-6 shadow rounded p-5 rounded-lg shadow-md hover:bg-pink-200 transition-colors">
+              <span>Payment File Request</span>
+              <span className="text-xl">➔</span>
+            </Link>
+            <Link
+              to="/Doc/leave-justification"
+              className="flex items-center justify-between bg-white p-6 shadow rounded p-5  rounded-lg shadow-md hover:bg-pink-200 transition-colors">
+              <span>Leave Justification Paper Request</span>
+              <span className="text-xl">➔</span>
+            </Link>
+          </div>
         </div>
       </div>
     </section>
   );
-};
-
-export default Employee;
+}
