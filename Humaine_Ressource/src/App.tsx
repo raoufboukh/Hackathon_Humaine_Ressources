@@ -4,7 +4,7 @@ import Landing from "./components/Landing";
 import Services from "./components/Services";
 import Footer from "./components/Footer";
 import Work from "./components/Work";
-import Employee from "./components/Employee";
+import Employee from "./components/Employee/Employee";
 
 function App() {
   return (
