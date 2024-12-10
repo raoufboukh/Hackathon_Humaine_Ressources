@@ -6,11 +6,11 @@ import Footer from "./components/Footer";
 import Work from "./components/Work";
 import Employee from "./components/Employee/Employee";
 import Doc from "./components/Employee/Doc";
-<<<<<<< HEAD
 import Settings from "./components/Employee/Settings";
-=======
 import Vacation from "./components/Employee/Vacation";
->>>>>>> 3b8cbc7730ebb710385bce9e61dc554116d020d7
+import Performance from "./components/Employee/Performance";
+import Profile from "./components/Employee/Profile";
+import Support from "./components/Employee/Support";
 
 function App() {
   return (
@@ -30,14 +30,11 @@ function App() {
         />
         <Route path="/employee" element={<Employee />} />
         <Route path="/employee/document" element={<Doc />} />
-<<<<<<< HEAD
         <Route path="/employee/settings" element={<Settings />} />
-        {/* <Route path="/employee/vacation" element={<Vacation />} />
-        <Route path="/employee/performance" element={<Performance />} />*/}
-=======
         <Route path="/employee/vacation" element={<Vacation />} />
-        {/* <Route path="/employee/performance" element={<Performance />} /> */}
->>>>>>> 3b8cbc7730ebb710385bce9e61dc554116d020d7
+        <Route path="/employee/performance" element={<Performance />} />
+        <Route path="/employee/profile" element={<Profile />} />
+        <Route path="/employee/support" element={<Support />} />
       </Routes>
     </>
   );

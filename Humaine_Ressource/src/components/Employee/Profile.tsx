@@ -1,13 +1,13 @@
+import React from "react";
 import { CgHome } from "react-icons/cg";
 import { CiCalendar } from "react-icons/ci";
 import { FaUser } from "react-icons/fa";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
 
-const Performance = () => {
+function Profile() {
   return (
     <section className="flex">
       {/* Sidebar */}
@@ -55,50 +55,59 @@ const Performance = () => {
 
       {/* Main Content */}
       <div className="basis-[78%] container py-10">
-        <div className="flex items-center justify-between">
-          <h1 className="font-black text-3xl">Performance</h1>
-          <IoIosNotificationsOutline className="text-4xl cursor-pointer" />
-        </div>
-        <div className="flex flex-wrap justify-center px-10 gap-10 py-10">
-          {/* Card 1 */}
-          <div className="bg-white rounded-xl p-6 flex-grow max-w-[400px]">
-            <h2 className="text-xl font-bold mb-4 leading-7">
-              Performance Statics
-            </h2>
-            <div className="flex justify-between mb-3">
-              <p>Hour of Works</p>
-              <p className="text-green-500">7.5/30</p>
-            </div>
-            <div className="flex justify-between mb-3">
-              <p>Completed Goals</p>
-              <p className="text-green-500">7/10</p>
-            </div>
-            <div className="flex justify-between">
-              <p>Trainings Completed</p>
-              <p className="text-green-500">3/4</p>
-            </div>
+        <h1 className="font-black text-3xl mb-5">Profile</h1>
+        <div className="flex items-start gap-6">
+          {/* Profile Image */}
+          <div className=" w-40 h-40 rounded-full overflow-hidden">
+            <img
+              src="https://via.placeholder.com/150"
+              alt="Profile"
+              className="w-full h-full "
+            />
           </div>
-          {/* Card 2 */}
-          <div className="bg-white rounded-xl p-6 flex-grow max-w-[400px]">
-            <h2 className="text-xl font-bold mb-4 leading-7">Rewards</h2>
-            <div className="flex justify-between mb-3">
-              <p>Before time tasks finished</p>
-              <p className="text-green-500">2</p>
+
+          {/* Profile Details */}
+          <div className="w-full">
+            {/* First Name and Last Name */}
+            <div className="flex justify-between items-center bg-white p-4 rounded-lg mb-4 shadow-sm">
+              <div>
+                <p className="font-semibold">Last Name:</p>
+                <p>Dupont</p>
+              </div>
+              <div>
+                <p className="font-semibold">First Name:</p>
+                <p>Marie</p>
+              </div>
             </div>
-            <div className="flex justify-between mb-3">
-              <p>Money Rewarded</p>
-              <p className="text-green-500">1000$</p>
+
+            {/* Email */}
+            <div className="bg-white p-4 rounded-lg mb-4 shadow-sm">
+              <p className="font-semibold">Email:</p>
+              <p>marie.dupont@example.com</p>
             </div>
-            <div className="flex justify-between items-center mt-4">
-              <button className="bg-buttonColor text-white hover:bg-transparent hover:text-black transition-all duration-300 border-4 border-buttonColor px-3 py-1 text-sm rounded-lg ml-auto">
-                More
-              </button>
+
+            {/* Phone Number */}
+            <div className="bg-white p-4 rounded-lg mb-4 shadow-sm">
+              <p className="font-semibold">Phone Number:</p>
+              <p>+123 456 7890</p>
+            </div>
+
+            {/* Position */}
+            <div className="bg-white p-4 rounded-lg mb-4 shadow-sm">
+              <p className="font-semibold">Position:</p>
+              <p>Software Engineer</p>
+            </div>
+
+            {/* Role */}
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <p className="font-semibold">Role:</p>
+              <p>Employee</p>
             </div>
           </div>
         </div>
       </div>
     </section>
   );
-};
+}
 
-export default Performance;
+export default Profile;
