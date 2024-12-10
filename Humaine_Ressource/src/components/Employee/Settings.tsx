@@ -3,10 +3,10 @@ import { CiCalendar } from "react-icons/ci";
 import { FaUser } from "react-icons/fa";
 import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
-import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
+
 import { RiBarChartFill } from "react-icons/ri";
-import { Link } from "react-router-dom";
-// import { Switch } from "@/components/ui/switch";
+
+import { HiPlus } from "react-icons/hi"; // For the "+" icon
 
 export default function SettingsPage() {
   return (
@@ -42,7 +42,7 @@ export default function SettingsPage() {
               <FaUser /> Profile
             </li>
             <li className="py-3 flex gap-3 items-center cursor-pointer text-[22px]">
-              <MdOutlineSettings /> Settings
+              Settings
             </li>
           </ul>
           <ul className="px-6">
@@ -55,30 +55,33 @@ export default function SettingsPage() {
 
       <div className="flex-1 flex items-center justify-center">
         <div className="w-full max-w-md space-y-6">
-          <h1 className="text-2xl font-bold text-center">Settings</h1>
+          <h1 className="font-black text-3xl mb-10">Settings</h1>
 
-          {/* New section for "Settings" and notification icon */}
-          <div className="flex items-center justify-between bg-white p-4 shadow rounded">
-            <div className="flex items-center gap-2">
-              <MdOutlineSettings className="text-lg" />
-              <span className="font-bold text-lg">Settings</span>
+          {/* Divs for the items */}
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            {/* First Row */}
+            <div className="flex items-center justify-between bg-white p-4 shadow rounded">
+              <HiPlus className="text-xl" />
+              <span className="text-lg">Mute Notification</span>
             </div>
-            <MdOutlineNotifications className="text-lg cursor-pointer" />
-          </div>
+            <div className="flex items-center justify-between bg-white p-4 shadow rounded">
+              <HiPlus className="text-xl" />
+              <span className="text-lg">Manage Devices</span>
+            </div>
+            <div className="flex items-center justify-between bg-white p-4 shadow rounded">
+              <HiPlus className="text-xl" />
+              <span className="text-lg">Light Default</span>
+            </div>
 
-          <div className="space-y-4">
-            <Link
-              to="/Doc/payment-file"
-              className="flex items-center justify-between bg-white p-6 shadow rounded p-5 rounded-lg shadow-md hover:bg-pink-200 transition-colors">
-              <span>Mute Notification</span>
-              <span className="text-xl"></span>
-            </Link>
-            <Link
-              to="/Doc/leave-justification"
-              className="flex items-center justify-between bg-white p-6 shadow rounded p-5 rounded-lg shadow-md hover:bg-pink-200 transition-colors">
-              <span>Manage Devices</span>
-              <span className="text-xl"></span>
-            </Link>
+            {/* Second Row */}
+            <div className="flex items-center justify-between bg-white p-4 shadow rounded col-span-3">
+              <HiPlus className="text-xl" />
+              <span className="text-lg">English</span>
+            </div>
+            <div className="flex items-center justify-between bg-white p-4 shadow rounded col-span-3">
+              <HiPlus className="text-xl" />
+              <span className="text-lg">Icon</span>
+            </div>
           </div>
         </div>
       </div>
