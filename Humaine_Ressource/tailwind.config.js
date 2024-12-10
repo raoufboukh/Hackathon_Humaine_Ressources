@@ -19,6 +19,9 @@ export default {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
       },
+      backgroundImage: {
+        gradient: "linear-gradient(90deg, #3F48CC 75%, white 75)",
+      },
       colors: {
         bodyColor: "#E2E3F7",
         buttonColor: "#3F48CC",

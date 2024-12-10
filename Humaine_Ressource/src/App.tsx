@@ -5,7 +5,10 @@ import Services from "./components/Services";
 import Footer from "./components/Footer";
 import Work from "./components/Work";
 import Employee from "./components/Employee/Employee";
+<<<<<<< HEAD
 import Doc from "./components/Employee/Doc";
+=======
+>>>>>>> 9fb80f19cb8813101a7346d255279dea19b85097
 
 function App() {
   return (
