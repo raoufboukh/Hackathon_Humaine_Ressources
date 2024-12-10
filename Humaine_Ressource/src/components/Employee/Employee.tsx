@@ -5,7 +5,6 @@ import { CiCalendar } from "react-icons/ci";
 import { RiBarChartFill } from "react-icons/ri";
 import { LuMessageCircle } from "react-icons/lu";
 import { IoIosNotificationsOutline } from "react-icons/io";
-// import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineSettings } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 const Employee = () => {
@@ -57,6 +56,7 @@ const Employee = () => {
           <h1 className="font-black text-3xl">Hello Marie Dupont!</h1>
           <IoIosNotificationsOutline className="text-4xl cursor-pointer" />
         </div>
+        <div className=""></div>
       </div>
     </section>
   );
