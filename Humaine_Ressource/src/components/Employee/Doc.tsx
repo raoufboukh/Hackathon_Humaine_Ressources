@@ -6,7 +6,7 @@ import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import Dashboard from "./dashboard";
+import Dashboard from "./Dashboard";
 
 export default function Doc() {
   return (
