@@ -1,0 +1,16 @@
+<!-- templates/employees/leave_request_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Leave Requests</h2>
+<a href="{% url 'employees:leave_request_add' %}">Add Leave Request</a>
+<ul>
+    {% for leave_request in leave_requests %}
+    <li>
+        <a href="{% url 'employees:leave_request_detail' leave_request.pk %}">
+            {{ leave_request.employee }} - {{ leave_request.leave_type }} ({{ leave_request.status }})
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
