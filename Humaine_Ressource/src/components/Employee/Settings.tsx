@@ -1,41 +1,47 @@
-import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
+import { RiArrowRightSLine } from "react-icons/ri";
 
 import { Link } from "react-router-dom";
 import Dashboard from "./Dashboard";
-// import { Switch } from "@/components/ui/switch";
 
 export default function SettingsPage() {
   return (
-    <section className="flex">
+    <section className="flex min-h-screen">
       <Dashboard />
 
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-md space-y-6">
-          <h1 className="text-2xl font-bold text-center">Settings</h1>
+      <div className="flex-1 flex justify-center">
+        <div className="container py-10">
+          <h1 className="font-black text-3xl mb-10">Settings</h1>
 
-          {/* New section for "Settings" and notification icon */}
-          <div className="flex items-center justify-between bg-white p-4 shadow rounded">
-            <div className="flex items-center gap-2">
-              <MdOutlineSettings className="text-lg" />
-              <span className="font-bold text-lg">Settings</span>
-            </div>
-            <MdOutlineNotifications className="text-lg cursor-pointer" />
-          </div>
-
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-20">
             <Link
-              to="/Doc/payment-file"
-              className="flex items-center justify-between bg-white p-6 shadow rounded p-5 rounded-lg shadow-md hover:bg-pink-200 transition-colors"
+              to="/Doc/notification"
+              className="flex items-center justify-between bg-white p-6 shadow-lg rounded-lg hover:shadow-xl hover:scale-[1.02] transition-all"
             >
-              <span>Mute Notification</span>
-              <span className="text-xl"></span>
+              <span className="font-bold text-darkText">
+                Manage Notification
+              </span>
+              <RiArrowRightSLine className="text-3xl text-buttonColor" />
             </Link>
             <Link
-              to="/Doc/leave-justification"
-              className="flex items-center justify-between bg-white p-6 shadow rounded p-5 rounded-lg shadow-md hover:bg-pink-200 transition-colors"
+              to="/Doc/devices"
+              className="flex items-center justify-between bg-white p-6 shadow-lg rounded-lg hover:shadow-xl hover:scale-[1.02] transition-all"
             >
-              <span>Manage Devices</span>
-              <span className="text-xl"></span>
+              <span className="font-bold text-darkText">Manage Devices</span>
+              <RiArrowRightSLine className="text-3xl text-buttonColor" />
+            </Link>
+            <Link
+              to="/Doc/theme"
+              className="flex items-center justify-between bg-white p-6 shadow-lg rounded-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+            >
+              <span className="font-bold text-darkText">Theme</span>
+              <RiArrowRightSLine className="text-3xl text-buttonColor" />
+            </Link>
+            <Link
+              to="/Doc/colors"
+              className="flex items-center justify-between bg-white p-6 shadow-lg rounded-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+            >
+              <span className="font-bold text-darkText">Colors</span>
+              <RiArrowRightSLine className="text-3xl text-buttonColor" />
             </Link>
           </div>
         </div>

@@ -26,12 +26,12 @@ const Vacation = () => {
             </div>
           </div>
           <div className="basis-[50%]">
-            <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow-lg">
-              <p>Vacation Request</p>
+            <div className="flex items-center justify-between bg-white p-3 rounded-lg shadow-lg cursor-pointer">
+              <p className="font-bold">Vacation Request</p>
               <FaArrowRight className="text-buttonColor" />
             </div>
-            <div className="flex items-center justify-between bg-white mt-10 p-3 rounded-lg shadow-lg">
-              <p>Illness Vacation</p>
+            <div className="flex items-center justify-between bg-white mt-10 p-3 rounded-lg shadow-lg cursor-pointer">
+              <p className="font-bold">Illness Vacation</p>
               <FaArrowRight className="text-buttonColor" />
             </div>
           </div>

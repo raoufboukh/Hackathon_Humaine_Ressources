@@ -6,62 +6,22 @@ import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
+import Dashboard from "./Dashboard";
 
 const Performance = () => {
   return (
     <section className="flex">
       {/* Sidebar */}
-      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen">
-        <div className="flex gap-2 items-center">
-          <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
-            <FaUser className="w-7 h-7" />
-          </div>
-          <div>
-            <h2 className="font-bold text-lg">Marie Dupont</h2>
-            <p>Employee</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-12">
-          <ul className="pt-10">
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <CgHome /> Dashboard
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <IoDocumentTextSharp /> Document
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <CiCalendar /> Vacation
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <RiBarChartFill /> Performance
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <LuMessageCircle /> Support
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <FaUser /> Profile
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <MdOutlineSettings /> Settings
-            </li>
-          </ul>
-          <ul>
-            <li className="flex gap-3 items-center cursor-pointer text-[20px]">
-              <IoLogOut /> Logout
-            </li>
-          </ul>
-        </div>
-      </div>
-
+      <Dashboard />
       {/* Main Content */}
       <div className="basis-[78%] container py-10">
         <div className="flex items-center justify-between">
           <h1 className="font-black text-3xl">Performance</h1>
           <IoIosNotificationsOutline className="text-4xl cursor-pointer" />
         </div>
-        <div className="flex flex-wrap justify-center px-10 gap-10 py-10">
+        <div className="flex flex-wrap   my-20  ">
           {/* Card 1 */}
-          <div className="bg-white rounded-xl p-6 flex-grow max-w-[400px]">
+          <div className="bg-white rounded-xl p-6 flex-grow max-w-[400px] mr-10">
             <h2 className="text-xl font-bold mb-4 leading-7">
               Performance Statics
             </h2>

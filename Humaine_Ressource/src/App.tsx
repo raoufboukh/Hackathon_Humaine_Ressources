@@ -11,11 +11,8 @@ import Vacation from "./components/Employee/Vacation";
 import Performance from "./components/Employee/Performance";
 import Profile from "./components/Employee/Profile";
 import Support from "./components/Employee/Support";
-<<<<<<< HEAD
-=======
-import ErrorPage from "./components/ErrorPage";
->>>>>>> 668825fc5439b4a0f5504c1cedd2a3670b9ca05a
 import Login from "./components/Login";
+import ErrorPage from "./components/ErrorPage";
 
 function App() {
   return (
@@ -34,22 +31,15 @@ function App() {
           }
         />
         <Route path="/employee" element={<Employee />} />
-        <Route path="/employee/document" element={<Doc />} />
-        <Route path="/employee/settings" element={<Settings />} />
-<<<<<<< HEAD
-=======
-        {/* <<<<<<< HEAD */}
->>>>>>> 668825fc5439b4a0f5504c1cedd2a3670b9ca05a
-        <Route path="/employee/vacation" element={<Vacation />} />
-        <Route path="/employee/performance" element={<Performance />} />
-        <Route path="/employee/profile" element={<Profile />} />
-        <Route path="/employee/support" element={<Support />} />
+        <Route path="/performance" element={<Performance />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
-<<<<<<< HEAD
-=======
-        <Route path="*" element={<ErrorPage />} />
-        {/* >>>>>>> 3c4d2f64fe040dffe1cb96501b2ba7c270cbdd38 */}
->>>>>>> 668825fc5439b4a0f5504c1cedd2a3670b9ca05a
+        <Route path="/dashboard" element={<Employee />} />
+        <Route path="/document" element={<Doc />} />
+        <Route path="/vacation" element={<Vacation />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
       {/* )} */}
     </>
