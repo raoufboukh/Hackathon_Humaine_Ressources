@@ -30,7 +30,6 @@ function App() {
         <Route path="/employee/document" element={<Doc />} />
         <Route path="/employee/settings" element={<Settings />} />
         <Route path="/login" element={<Login />} />
-        {/* Catch-all route for undefined paths */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
