@@ -8,7 +8,7 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { MdOutlineSettings } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 import { FaArrowRight } from "react-icons/fa";
-import Dashboard from "./dashboard";
+import Dashboard from "./Dashboard";
 // import { PiWarningOctagon } from "react-icons/pi";
 
 const Vacation = () => {

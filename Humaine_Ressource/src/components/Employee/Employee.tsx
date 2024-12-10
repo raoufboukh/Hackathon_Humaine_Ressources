@@ -9,7 +9,7 @@ import { MdOutlineSettings } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 import { FaArrowRight } from "react-icons/fa";
 import { PiWarningOctagon } from "react-icons/pi";
-import Dashboard from "./dashboard";
+import Dashboard from "./Dashboard";
 const Employee = () => {
   return (
     <section className="flex">

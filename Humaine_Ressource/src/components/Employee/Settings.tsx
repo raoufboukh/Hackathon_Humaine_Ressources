@@ -6,7 +6,7 @@ import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import Dashboard from "./dashboard";
+import Dashboard from "./Dashboard";
 // import { Switch } from "@/components/ui/switch";
 
 export default function SettingsPage() {

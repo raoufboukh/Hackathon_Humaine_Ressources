@@ -6,7 +6,7 @@ from django.contrib.admin import ModelAdmin
 
 @admin.register(Prime)
 class PrimeAdmin(ModelAdmin):
-    list_display = ('nom', 'montant', 'imposable', 'cotisable')
+    list_display = ('nom', 'montant', 'imposable', 'cotisable') #1111111111111111111111111111
     list_filter = ('imposable', 'cotisable')
     search_fields = ('nom',)
     ordering = ('nom',)
