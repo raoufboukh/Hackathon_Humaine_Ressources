@@ -8,6 +8,7 @@ import {
   FaFileAlt,
   FaUser,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const MeliAIHRChatbot = () => {
   const [activeSection, setActiveSection] = useState("features");
@@ -44,10 +45,16 @@ const MeliAIHRChatbot = () => {
               MeliAI HR Chatbot
             </h1>
           </div>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-10">
             Your intelligent HR assistant, providing comprehensive support,
             guidance, and insights across all human resources functions.
           </p>
+          <Link
+            to="/chatbot"
+            className="mt-10 bg-buttonColor px-5 py-2 rounded-3xl cursor-pointer hover:bg-transparent hover:text-black transition-all duration-300 ease-in-out border-4 border-buttonColor text-white"
+          >
+            Try it Now
+          </Link>
         </header>
 
         {/* Navigation */}
@@ -60,7 +67,8 @@ const MeliAIHRChatbot = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveSection(item.id)}
-                className="flex items-center justify-center p-4 rounded-lg transition duration-300 hover:bg-blue-100">
+                className="flex items-center justify-center p-4 rounded-lg transition duration-300 hover:bg-blue-100"
+              >
                 {React.cloneElement(item.icon, { className: "mr-2 text-xl" })}
                 {item.label}
               </button>
@@ -78,7 +86,8 @@ const MeliAIHRChatbot = () => {
               {chatbotFeatures.map((feature, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition duration-300">
+                  className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition duration-300"
+                >
                   {feature.icon}
                   <h3 className="text-xl font-medium mb-3">{feature.title}</h3>
                   <p className="text-gray-600 mb-4">{feature.description}</p>

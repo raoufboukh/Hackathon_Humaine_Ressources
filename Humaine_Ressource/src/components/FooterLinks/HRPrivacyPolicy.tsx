@@ -13,7 +13,7 @@ const HRPrivacyPolicy = () => {
   return (
     <section className="flex">
       {/* Sidebar - Mimicking Performance component's sidebar */}
-      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen">
+      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen m-0">
         <div className="flex gap-2 items-center">
           <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
             <FaLock className="w-7 h-7 text-buttonColor" />

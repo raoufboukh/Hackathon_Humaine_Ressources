@@ -17,6 +17,17 @@ import Service from "./components/Service";
 import About from "./components/About";
 import ErrorPage from "./components/ErrorPage";
 import Chatbot from "./components/Chatbot/Chat";
+import EmployeeManagement from "./components/FooterLinks/EmployeeManagement";
+import AttendanceTracking from "./components/FooterLinks/AttendanceTracking";
+import HRAnalytics from "./components/FooterLinks/HRAnalytics";
+import PaymentFiles from "./components/FooterLinks/PaymentFiles";
+import AccountantReports from "./components/FooterLinks/AccountantReports";
+import Careers from "./components/FooterLinks/Careers";
+import HRSocialMedia from "./components/FooterLinks/HRSocialMedia";
+import HRPrivacyPolicy from "./components/FooterLinks/HRPrivacyPolicy";
+import HRFAQPage from "./components/FooterLinks/HRFAQPage";
+import MeliAIHRChatbot from "./components/FooterLinks/MeliAIHRChatbot";
+import BlogInsights from "./components/FooterLinks/BlogInsights";
 // import Admin from "./components/Admin/Admin";
 
 function App() {
@@ -59,6 +70,18 @@ function App() {
         <Route path="/Service" element={<Service />} />
         <Route path="/About" element={<About />} />
         <Route path="/chat" element={<Chatbot />} />
+        <Route path="/employee-managment" element={<EmployeeManagement />} />
+        <Route path="/attendance-tracking" element={<AttendanceTracking />} />
+        <Route path="/hr-analytics" element={<HRAnalytics />} />
+        <Route path="/payment-files" element={<PaymentFiles />} />
+        <Route path="/acountant-reports" element={<AccountantReports />} />
+        <Route path="/carrers" element={<Careers />} />
+        <Route path="/social-media" element={<HRSocialMedia />} />
+        <Route path="/privacy-policy" element={<HRPrivacyPolicy />} />
+        <Route path="/faqs" element={<HRFAQPage />} />
+        <Route path="/meliAI-ChatBot" element={<MeliAIHRChatbot />} />
+        <Route path="/blogs" element={<BlogInsights />} />
+        <Route path="/chatbot" element={<Chatbot />} />
 
         <Route path="/login" element={<Login />} />
       </Routes>

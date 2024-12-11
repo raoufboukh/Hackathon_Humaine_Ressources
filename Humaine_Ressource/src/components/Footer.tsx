@@ -9,23 +9,19 @@ const Footer = () => {
           <h3 className="text-2xl font-bold mb-4">Features</h3>
           <ul className="flex flex-col gap-2">
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/features/employee-management">
-                Employee Management
-              </Link>
+              <Link to="/employee-managment">Employee Management</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/features/attendance-tracking">
-                Attendance Tracking
-              </Link>
+              <Link to="/attendance-tracking">Attendance Tracking</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/features/hr-analytics">HR Analytics</Link>
+              <Link to="/hr-analytics">HR Analytics</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/features/payment-files">Payment Files</Link>
+              <Link to="/payment-files">Payment Files</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/features/accountant-reports">Accountant Reports</Link>
+              <Link to="/acountant-reports">Accountant Reports</Link>
             </li>
           </ul>
         </div>
@@ -35,10 +31,10 @@ const Footer = () => {
           <h3 className="text-2xl font-bold mb-4">Company</h3>
           <ul className="flex flex-col gap-2">
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/about-us">About Us</Link>
+              <Link to="/about">About Us</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/careers">Careers</Link>
+              <Link to="/carrers">Careers</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
               <Link to="/social-media">Social Media</Link>
@@ -54,7 +50,7 @@ const Footer = () => {
           <h3 className="text-2xl font-bold mb-4">Support</h3>
           <ul className="flex flex-col gap-2">
             <li className="hover:text-gray-300 transition-colors duration-300">
-              <Link to="/contact-us">Contact Us</Link>
+              <Link to="/contact">Contact Us</Link>
             </li>
             <li className="hover:text-gray-300 transition-colors duration-300">
               <Link to="/faqs">FAQ's</Link>
