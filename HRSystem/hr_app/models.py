@@ -151,7 +151,7 @@ class LeaveType(models.Model):
     def __str__(self):
         return self.name
 class LeaveBalance(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='leave_balances')
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
     year = models.PositiveIntegerField()
     balance = models.DecimalField(max_digits=5, decimal_places=1)
