@@ -1,8 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import LeaveRequest, Payroll, HRDocument, PayrollPrime, Prime
+from .models import LeaveRequest, Payroll, HRDocument, PayrollPrime, Prime, EmployeeFingerprint
 from django.contrib.admin import ModelAdmin
 
+@admin.register(EmployeeFingerprint)
+class EmployeeFingerprintAdmin(admin.ModelAdmin):
+     list_display = ('employee', 'fingerprint_id')
+     search_fields = ('employee__name', 'fingerprint_id')
 
 @admin.register(Prime)
 class PrimeAdmin(admin.ModelAdmin):
