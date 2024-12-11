@@ -9,6 +9,7 @@ import { RiBarChartFill } from "react-icons/ri";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [info, setInfo] = useState([]);
@@ -45,34 +46,47 @@ const Dashboard = () => {
   }, [token]);
 
   return (
-    <div className="dashboard max-w-[100vw]">
-      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen ml-0 ">
+    <div className="dashboard max-w-[100vw] h-[140vh] m-0 ">
+      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-full ml-0 ">
         <div className="flex gap-2 items-center">
           <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
-            <FaUser className="w-7 h-7" />
+            <FaUser className="w-7 h-7 text-buttonColor" />
           </div>
           <div className="">
             <h2 className="font-bold text-lg">Marie Dupont</h2>
             <p className="">Employee</p>
           </div>
         </div>
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col justify-between h-full">
           <ul className="pt-10">
             {[
-              { icon: <CgHome />, label: "Dashboard" },
-              { icon: <IoDocumentTextSharp />, label: "Document" },
-              { icon: <CiCalendar />, label: "Vacation" },
-              { icon: <RiBarChartFill />, label: "Performance" },
-              { icon: <LuMessageCircle />, label: "Support" },
-              { icon: <FaUser />, label: "Profile" },
-              { icon: <MdOutlineSettings />, label: "Settings" },
+              { icon: <CgHome />, label: "Dashboard", to: "/dashboard" },
+              {
+                icon: <IoDocumentTextSharp />,
+                label: "Document",
+                to: "/document",
+              },
+              { icon: <CiCalendar />, label: "Attendance", to: "/attendance" },
+              {
+                icon: <RiBarChartFill />,
+                label: "Performance",
+                to: "/performance",
+              },
+              { icon: <LuMessageCircle />, label: "Support", to: "/support" },
+              { icon: <FaUser />, label: "Profile", to: "/profile" },
+              {
+                icon: <MdOutlineSettings />,
+                label: "Settings",
+                to: "/settings",
+              },
             ].map((item, index) => (
-              <li
-                key={index}
-                className="py-3 px-2 flex gap-3 items-center cursor-pointer text-[20px] hover:bg-white hover:text-buttonColor transition-all duration-300 w-full rounded-md"
-              >
-                {item.icon} {item.label}
-              </li>
+              <Link to={item.to} key={index}>
+                <li className="py-3 px-2 flex items-center gap-3 cursor-pointer text-[20px] hover:bg-white hover:text-buttonColor transition-all duration-300 w-full rounded-md">
+                  <span className="flex items-center gap-2">
+                    {item.icon} {item.label}
+                  </span>
+                </li>
+              </Link>
             ))}
           </ul>
           <ul className="">

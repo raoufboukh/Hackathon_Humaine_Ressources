@@ -52,9 +52,17 @@ class CompanyPolicy(models.Model):
     def __str__(self):
         return self.name
 
+class EmployeeFingerprint(models.Model):
+    """Model to store fingerprint data for each employee"""
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, related_name='fingerprint')
+    fingerprint_id = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return f"{self.employee.name}'s Fingerprint"
 
 class Attendance(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  # One-to-Many relationship , 
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='attendances')
+    fingerprint = models.ForeignKey(EmployeeFingerprint, on_delete=models.CASCADE, null=True, blank=True)
     clock_in = models.DateTimeField()
     clock_out = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
@@ -63,16 +71,75 @@ class Attendance(models.Model):
             ('present', 'Present'),
             ('absent', 'Absent'),
             ('late', 'Late'),
+            ('half_day', 'Half Day'),
+            ('work_from_home', 'Work From Home')
         ],
         default='present'
     )
-
+    notes = models.TextField(blank=True)
+    
     def calculate_hours_worked(self):
+        """Calculate total hours worked with validation"""
         if not self.clock_out:
-            return 0
+            return Decimal('0.00')
+        if self.clock_out < self.clock_in:
+            raise ValidationError("Clock out time cannot be before clock in time")
         delta = self.clock_out - self.clock_in
-        return round(delta.total_seconds() / 3600, 2)
-
+        return Decimal(str(round(delta.total_seconds() / 3600, 2)))
+    
+    def calculate_overtime_hours(self):
+        """Calculate overtime hours based on company policy"""
+        company_policy = self.employee.company_policy
+        regular_hours = 8  # Default workday hours
+        
+        if company_policy.pay_frequency == 'hourly':
+            hours_worked = self.calculate_hours_worked()
+            return max(Decimal('0.00'), hours_worked - regular_hours)
+        return Decimal('0.00')
+    
+    def is_late(self):
+        """Check if employee was late based on schedule"""
+        # You can customize this based on company's start time
+        work_start_time = self.clock_in.replace(hour=9, minute=0)
+        return self.clock_in > work_start_time
+    
+    def clean(self):
+        """Validate attendance data"""
+        super().clean()
+        if self.clock_out and self.clock_out < self.clock_in:
+            raise ValidationError("Clock out must be after clock in time")
+        
+        # Check for overlapping attendance records
+        overlapping = Attendance.objects.filter(
+            employee=self.employee,
+            clock_in__date=self.clock_in.date()
+        ).exclude(pk=self.pk)
+        
+        if overlapping.exists():
+            raise ValidationError("Employee already has attendance record for this date")
+    
+    class Meta:
+        ordering = ['-clock_in']
+        indexes = [
+            models.Index(fields=['employee', 'clock_in']),
+            models.Index(fields=['status'])
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(clock_out__isnull=True) | models.Q(clock_out__gt=models.F('clock_in')),
+                name='valid_clock_out_time'
+            )
+        ]
+    
+    def save(self, *args, **kwargs):
+        """Auto-update status based on attendance"""
+        if not self.status:
+            if self.is_late():
+                self.status = 'late'
+            else:
+                self.status = 'present'
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.employee} - {self.clock_in.date()}"
     
@@ -80,7 +147,7 @@ class LeaveType(models.Model):
     name = models.CharField(max_length=100)
     days_allowed = models.PositiveIntegerField()
     requires_approval = models.BooleanField(default=True)
-
+    
     def __str__(self):
         return self.name
 class LeaveBalance(models.Model):

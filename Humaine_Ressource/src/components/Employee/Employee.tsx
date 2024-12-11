@@ -38,21 +38,19 @@ const Employee = () => {
             </div>
           </div>
         </div>
-        <div className="grid justify-start grid-cols-2 gap-4 py-10">
-          <div className="bg-white rounded-xl basis-[32%] p-3">
+        <div className="grid justify-start grid-cols-2 gap-4 py-5">
+          <div className="bg-white rounded-xl basis-[32%] p-5">
             <h2 className="text-lg font-bold">Attendance</h2>
-            <div className="flex justify-between items-center border-t border-gray-200">
-              <p className="py-1 font-semibold">
-                Attendance <br /> Hours
-              </p>
+            <div className="flex justify-between items-center border-t border-gray-200 py-2">
+              <p className="font-semibold">Attendance Hours</p>
               <p className="text-buttonColor">38/40h</p>
             </div>
-            <div className="flex justify-between items-center border-t border-gray-200">
-              <p className="py-1 font-semibold">Leave Hours</p>
+            <div className="flex justify-between items-center border-t border-gray-200 py-2">
+              <p className="font-semibold">Leave Hours</p>
               <p className="text-red-600">2/40h</p>
             </div>
-            <div className="flex justify-between items-center border-t border-gray-200">
-              <p className="py-1 font-semibold">Week</p>
+            <div className="flex justify-between items-center border-t border-gray-200 py-2">
+              <p className="font-semibold">Week</p>
               <p className="">39/52wk</p>
             </div>
           </div>
@@ -77,7 +75,8 @@ const Employee = () => {
         <div className="bg-red-300 border border-red-600 w-full rounded-2xl flex gap-2 px-3 py-1 items-center">
           <PiWarningOctagon className="text-red-600 text-xl" />
           <p className="text-red-600 p-2">
-            Every Left Hour is Going to take of a part of your Salary
+            Every Left Hour that is not justified is Going to take of a part of
+            your Salary.
           </p>
         </div>
       </div>
