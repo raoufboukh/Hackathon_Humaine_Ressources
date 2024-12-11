@@ -34,27 +34,50 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.core.paginator import Paginator
-@login_required
-def employee_list(request):
-    search_query = request.GET.get('search', '')
-    employees = Employee.objects.all()
+from django.http import JsonResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.contrib.auth.models import User
+from employees.models import Employee
 
+def employee_list(request):
+    # Get the search query parameter
+    search_query = request.GET.get('search', '')
+
+    # Start by getting all users who are not staff
+    users = User.objects.filter(is_staff=False)
+
+    # If there's a search query, filter users based on the query
     if search_query:
-        employees = employees.filter(
-            Q(user__first_name__icontains=search_query) |
-            Q(user__last_name__icontains=search_query) |
-            Q(employee_id__icontains=search_query)
+        users = users.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(username__icontains=search_query)
         )
 
-    sort_by = request.GET.get('sort', 'user__first_name')
-    employees = employees.order_by(sort_by)
+    # Get the sorting field (defaults to sorting by first name)
+    sort_by = request.GET.get('sort', 'first_name')
+    users = users.order_by(sort_by)
 
+    # Pagination logic
     page_number = request.GET.get('page', 1)
-    paginator = Paginator(employees, 10)
+    paginator = Paginator(users, 10)
     page_obj = paginator.get_page(page_number)
 
-    employees_data = list(page_obj.object_list.values('id', 'user__first_name', 'user__last_name', 'department'))
+    # Prepare the employee data (fetching employee data associated with the user)
+    employees_data = []
+    for user in page_obj.object_list:
+        employee = Employee.objects.filter(user=user).first()  # Get the employee linked to the user
+        if employee:
+            employees_data.append({
+                'id': employee.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'employee_id': employee.employee_id,
+                'department': employee.department.name if employee.department else None,
+            })
 
+    # Return the JSON response with employee data and pagination information
     return JsonResponse({
         'employees': employees_data,
         'pagination': {
@@ -64,6 +87,7 @@ def employee_list(request):
             'total_pages': paginator.num_pages,
         }
     })
+
 
 @login_required
 def employee_add(request):

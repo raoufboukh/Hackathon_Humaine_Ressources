@@ -32,9 +32,7 @@ class LeaveRequestAdmin(admin.ModelAdmin):
 
 @admin.register(Payroll)
 class PayrollAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'period_start', 'period_end', 'base_salary', 'net_salary', 'payment_status')
-    list_filter = ('employee', 'period_start', 'period_end')
-    search_fields = ('employee__user__username', 'employee__user__first_name', 'employee__user__last_name')
+    list_display = ('employee', 'period_start', 'period_end', 'net_salary')
     readonly_fields = ('net_salary',)
 
     

@@ -8,27 +8,37 @@ import { MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [info, setInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  console.log(token);
+  // console.log(token);
 
   useEffect(() => {
+    // const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     axios
-      .get("http://127.0.0.1:8000/employees/list/", {
+      .get("http://127.0.0.1:8000/employees/", {
         headers: {
-          Authorization: `Bearer ${token}`, // Ensure the token is being sent
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        setInfo(res.data.employees);
+        console.log("Employees fetched:", res.data); // Log the response data
+        setInfo(res.data.employees); // Set the employees data
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching employees:", err);
+        console.error("Error fetching employees:", err.response || err.message);
         setError("Failed to fetch employees.");
         setLoading(false);
       });
@@ -66,7 +76,10 @@ const Dashboard = () => {
             ))}
           </ul>
           <ul className="">
-            <li className="py-3 px-2 flex gap-3 items-center cursor-pointer text-[20px] hover:bg-white hover:text-buttonColor transition-all duration-300 w-full rounded-md">
+            <li
+              className="py-3 px-2 flex gap-3 items-center cursor-pointer text-[20px] hover:bg-white hover:text-buttonColor transition-all duration-300 w-full rounded-md"
+              onClick={(e) => {}}
+            >
               <IoLogOut /> Logout
             </li>
           </ul>
