@@ -1,6 +1,5 @@
-import { RiArrowRightSLine } from "react-icons/ri";
-
 import { Link } from "react-router-dom";
+import { RiArrowRightSLine } from "react-icons/ri";
 import Dashboard from "./Dashboard";
 
 export default function SettingsPage() {

@@ -75,7 +75,8 @@ const Employee = () => {
         <div className="bg-red-300 border border-red-600 w-full rounded-2xl flex gap-2 px-3 py-1 items-center">
           <PiWarningOctagon className="text-red-600 text-xl" />
           <p className="text-red-600 p-2">
-            Every Left Hour is Going to take of a part of your Salary
+            Every Left Hour that is not justified is Going to take of a part of
+            your Salary.
           </p>
         </div>
       </div>

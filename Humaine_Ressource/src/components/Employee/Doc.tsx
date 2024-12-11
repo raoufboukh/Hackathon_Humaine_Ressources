@@ -29,14 +29,39 @@ export default function Doc() {
             to="/doc/payment-file"
             className="flex items-center justify-between bg-white text-darkText px-5 py-3 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
           >
-            <span className="font-bold">Payment File Request</span>
+            <span className="font-bold">Payment Document Request</span>
             <FaArrowRight className="text-buttonColor" />
           </Link>
+
+          <Link
+            to="/doc/payment-file"
+            className="flex items-center justify-between bg-white text-darkText px-5 py-3 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+          >
+            <span className="font-bold">Older Payment Documents</span>
+            <FaArrowRight className="text-buttonColor" />
+          </Link>
+
           <Link
             to="/doc/leave-justification"
             className=" flex items-center justify-between bg-white text-darkText px-5 py-3 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all "
           >
-            <span className="font-bold">Leave Justification Paper Request</span>
+            <span className="font-bold">employment contracts</span>
+            <FaArrowRight className="text-buttonColor" />
+          </Link>
+
+          <Link
+            to="/doc/leave-justification"
+            className=" flex items-center justify-between bg-white text-darkText px-5 py-3 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all "
+          >
+            <span className="font-bold">bonuses, allowances</span>
+            <FaArrowRight className="text-buttonColor" />
+          </Link>
+
+          <Link
+            to="/doc/leave-justification"
+            className=" flex items-center justify-between bg-white text-darkText px-5 py-3 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all "
+          >
+            <span className="font-bold">Legal Documents</span>
             <FaArrowRight className="text-buttonColor" />
           </Link>
         </div>

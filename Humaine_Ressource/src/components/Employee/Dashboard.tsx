@@ -9,7 +9,7 @@ import { RiBarChartFill } from "react-icons/ri";
 
 const Dashboard = () => {
   return (
-    <div className="dashboard max-w-[100vw] h-screen ">
+    <div className="dashboard max-w-[100vw] h-[140vh] m-0 ">
       <div className="bg-buttonColor basis-[22%] container py-10 text-white h-full ml-0 ">
         <div className="flex gap-2 items-center">
           <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
@@ -29,7 +29,7 @@ const Dashboard = () => {
                 label: "Document",
                 to: "/document",
               },
-              { icon: <CiCalendar />, label: "Vacation", to: "/vacation" },
+              { icon: <CiCalendar />, label: "Attendance", to: "/attendance" },
               {
                 icon: <RiBarChartFill />,
                 label: "Performance",
@@ -51,8 +51,6 @@ const Dashboard = () => {
                 </li>
               </Link>
             ))}
-          </ul>
-          <ul className="mt-auto">
             <Link to="/">
               <li className="py-3 px-2 flex items-center gap-3 cursor-pointer text-[20px] hover:bg-white hover:text-buttonColor transition-all duration-300 w-full rounded-md">
                 <span className="flex items-center gap-2 text-red-500">
