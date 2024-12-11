@@ -1,6 +1,6 @@
 from django.urls import path, include
 # from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import LeaveRequestListCreateView, LeaveRequestDetailView, LoginView, LogoutView, PayrollListCreateView, PayrollDetailView, HRDocumentListCreateView, HRDocumentDetailView, PayrollViewSet, PrimeViewSet
+from .views import LeaveRequestListCreateView, LeaveRequestDetailView, LoginView, LogoutView, PayrollListCreateView, PayrollDetailView, HRDocumentListCreateView, HRDocumentDetailView, PayrollViewSet, PrimeViewSet, AdminLoginView
 from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'payrolls', PayrollViewSet, basename='payroll')
@@ -20,6 +20,7 @@ urlpatterns = [
     path('documents/', HRDocumentListCreateView.as_view(), name='hr-document-list-create'),
     path('documents/<int:pk>/', HRDocumentDetailView.as_view(), name='hr-document-detail'),
 
+    path('admin/', AdminLoginView.as_view(), name='admin-login'),
     
     path('', include(router.urls)),
     

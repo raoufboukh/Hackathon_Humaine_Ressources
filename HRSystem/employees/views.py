@@ -11,36 +11,83 @@ from .forms import EmployeeForm
 from django.urls import reverse
 from django.contrib import messages
 
+from django.http import JsonResponse
+from django.core.serializers import serialize
+from .models import Employee
+
 @login_required
 def employee_list(request):
-    # Get search query from GET parameters
+    employees = Employee.objects.select_related('user', 'department').all()
+    employee_data = list(employees.values(
+        'id',
+        'user__first_name',
+        'user__last_name',
+        'employee_id',
+        'department__name',
+        'position__title',
+        'hire_date',
+        'employment_status'
+    ))
+    return JsonResponse(employee_data, safe=False)
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.contrib.auth.models import User
+from employees.models import Employee
+
+def employee_list(request):
+    # Get the search query parameter
     search_query = request.GET.get('search', '')
-    
-    # Get all employees with optional search filter
-    employees = Employee.objects.all()
+
+    # Start by getting all users who are not staff
+    users = User.objects.filter(is_staff=False)
+
+    # If there's a search query, filter users based on the query
     if search_query:
-        employees = employees.filter(
-            Q(user__first_name__icontains=search_query) |
-            Q(user__last_name__icontains=search_query) |
-            Q(employee_id__icontains=search_query)
+        users = users.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(username__icontains=search_query)
         )
-    
-    # Sort employees
-    sort_by = request.GET.get('sort', 'user__first_name')
-    employees = employees.order_by(sort_by)
-    
-    # Paginate results
+
+    # Get the sorting field (defaults to sorting by first name)
+    sort_by = request.GET.get('sort', 'first_name')
+    users = users.order_by(sort_by)
+
+    # Pagination logic
     page_number = request.GET.get('page', 1)
-    paginator = Paginator(employees, 10)  # 10 employees per page
+    paginator = Paginator(users, 10)
     page_obj = paginator.get_page(page_number)
-    
-    context = {
-        'page_obj': page_obj,
-        'search_query': search_query,
-        'sort_by': sort_by
-    }
-    
-    return render(request, 'employees/employee_list.html', context)
+
+    # Prepare the employee data (fetching employee data associated with the user)
+    employees_data = []
+    for user in page_obj.object_list:
+        employee = Employee.objects.filter(user=user).first()  # Get the employee linked to the user
+        if employee:
+            employees_data.append({
+                'id': employee.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'employee_id': employee.employee_id,
+                'department': employee.department.name if employee.department else None,
+            })
+
+    # Return the JSON response with employee data and pagination information
+    return JsonResponse({
+        'employees': employees_data,
+        'pagination': {
+            'has_next': page_obj.has_next(),
+            'has_previous': page_obj.has_previous(),
+            'current_page': page_obj.number,
+            'total_pages': paginator.num_pages,
+        }
+    })
+
 
 @login_required
 def employee_add(request):

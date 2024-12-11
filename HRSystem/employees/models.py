@@ -53,7 +53,28 @@ class Employee(models.Model):
 
     def __str__(self):
         return f"{self.user.get_full_name()} ({self.employee_id})"
-
+    
+    def save(self, *args, **kwargs):
+        if not self.employee_id:
+            self.employee_id = f"EMP{self.user.id}"  # Generate employee_id based on user ID
+        super().save(*args, **kwargs)
+        
+    @classmethod
+    def create_employee_from_user(cls, user, department=None, position=None, date_of_birth=None, phone_number=None, address=None, hire_date=None, employment_status='active', base_salary=0.00):
+        """Method to create an employee when a new user is created."""
+        # Create an Employee instance based on the User
+        employee = cls.objects.create(
+            user=user,
+            department=department,
+            position=position,
+            date_of_birth=date_of_birth,
+            phone_number=phone_number,
+            address=address,
+            hire_date=hire_date,
+            employment_status=employment_status,
+            base_salary=base_salary
+        )
+        return employee #
 class Performance(models.Model):
     """Employee performance tracking"""
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)

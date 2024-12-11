@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import LeaveRequest, Payroll, HRDocument, PayrollPrime, Prime, EmployeeFingerprint
 from django.contrib.admin import ModelAdmin
+from django.urls import path
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 @admin.register(EmployeeFingerprint)
 class EmployeeFingerprintAdmin(admin.ModelAdmin):
@@ -73,3 +77,23 @@ class HRDocumentAdmin(ModelAdmin):
             status
         )
     status_tag.short_description = 'Status'
+
+
+@csrf_exempt
+def primes_api(request):
+    if request.method == 'GET':
+        primes = Prime.objects.all().values()
+        return JsonResponse(list(primes), safe=False)
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        prime = Prime.objects.create(
+            nom=data['nom'],
+            montant=data['montant'],
+            imposable=data['imposable'],
+            cotisable=data['cotisable']
+        )
+        return JsonResponse({'id': prime.id, 'nom': prime.nom, 'montant': prime.montant, 'imposable': prime.imposable, 'cotisable': prime.cotisable})
+
+urlpatterns = [
+    path('api/primes/', primes_api),
+]

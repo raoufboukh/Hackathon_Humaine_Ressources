@@ -1,107 +1,104 @@
-import React from "react";
-import { CgHome } from "react-icons/cg";
-import { CiCalendar } from "react-icons/ci";
-import { FaUser } from "react-icons/fa";
-import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
-import { LuMessageCircle } from "react-icons/lu";
-import { MdOutlineSettings } from "react-icons/md";
-import { RiBarChartFill } from "react-icons/ri";
+import { useState } from "react";
+import Dashboard from "./Dashboard";
 
 function Profile() {
+  const [firstname, setFirstName] = useState("");
+  const [lastname, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
   return (
-    <section className="flex">
+    <section className="flex bg-lightPurple min-h-screen">
       {/* Sidebar */}
-      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen">
-        <div className="flex gap-2 items-center">
-          <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
-            <FaUser className="w-7 h-7" />
-          </div>
-          <div>
-            <h2 className="font-bold text-lg">Marie Dupont</h2>
-            <p>Employee</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-12">
-          <ul className="pt-10">
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <CgHome /> Dashboard
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <IoDocumentTextSharp /> Document
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <CiCalendar /> Vacation
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <RiBarChartFill /> Performance
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <LuMessageCircle /> Support
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <FaUser /> Profile
-            </li>
-            <li className="py-3 flex gap-3 items-center cursor-pointer text-[20px]">
-              <MdOutlineSettings /> Settings
-            </li>
-          </ul>
-          <ul>
-            <li className="flex gap-3 items-center cursor-pointer text-[20px]">
-              <IoLogOut /> Logout
-            </li>
-          </ul>
-        </div>
-      </div>
+      <Dashboard />
 
       {/* Main Content */}
-      <div className="basis-[78%] container py-10">
-        <h1 className="font-black text-3xl mb-5">Profile</h1>
-        <div className="flex items-start gap-6">
-          {/* Profile Image */}
-          <div className=" w-40 h-40 rounded-full overflow-hidden">
-            <img
-              src="https://via.placeholder.com/150"
-              alt="Profile"
-              className="w-full h-full "
-            />
-          </div>
+      <div className="flex-1 flex justify-center py-10">
+        <div className="w-[78%] bg-lightPurple">
+          <h1 className="font-black text-3xl text-darkText mb-10">Profile</h1>
 
-          {/* Profile Details */}
-          <div className="w-full">
-            {/* First Name and Last Name */}
-            <div className="flex justify-between items-center bg-white p-4 rounded-lg mb-4 shadow-sm">
-              <div>
-                <p className="font-semibold">Last Name:</p>
-                <p>Dupont</p>
+          {/* Profile Section */}
+          <div className="flex items-center gap-8">
+            {/* Profile Picture */}
+            <div className="flex flex-col items-center">
+              <div className="w-36 h-36 rounded-full overflow-hidden shadow-md">
+                <img
+                  src="https://via.placeholder.com/150"
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div>
-                <p className="font-semibold">First Name:</p>
-                <p>Marie</p>
+              <button className="mt-4 text-buttonColor font-semibold hover:underline">
+                Change Profile Picture
+              </button>
+            </div>
+
+            {/* Profile Details */}
+            <div className="flex flex-col gap-4 w-full">
+              {/* First Name and Last Name */}
+              <div className="flex gap-4">
+                <input
+                  type="text"
+                  value={firstname}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="First Name"
+                  className="flex-1 p-4 bg-white rounded-lg shadow outline-none"
+                />
+
+                <input
+                  type="text"
+                  value={lastname}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Last Name"
+                  className="flex-1 p-4 bg-white rounded-lg shadow outline-none"
+                />
               </div>
-            </div>
 
-            {/* Email */}
-            <div className="bg-white p-4 rounded-lg mb-4 shadow-sm">
-              <p className="font-semibold">Email:</p>
-              <p>marie.dupont@example.com</p>
-            </div>
+              {/* Email */}
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="p-4 bg-white rounded-lg shadow outline-none"
+              />
 
-            {/* Phone Number */}
-            <div className="bg-white p-4 rounded-lg mb-4 shadow-sm">
-              <p className="font-semibold">Phone Number:</p>
-              <p>+123 456 7890</p>
-            </div>
+              {/* Phone Number */}
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone Number"
+                className="p-4 bg-white rounded-lg shadow outline-none"
+              />
 
-            {/* Position */}
-            <div className="bg-white p-4 rounded-lg mb-4 shadow-sm">
-              <p className="font-semibold">Position:</p>
-              <p>Software Engineer</p>
-            </div>
+              {/* Position */}
+              <input
+                type="text"
+                value="IOT Developer"
+                placeholder="Position"
+                className="p-4 bg-gray-300 text-gray-600 rounded-lg shadow outline-none"
+                readOnly
+              />
 
-            {/* Role */}
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <p className="font-semibold">Role:</p>
-              <p>Employee</p>
+              {/* Role */}
+              <input
+                type="text"
+                value="Employer"
+                placeholder="Role"
+                className="p-4 bg-gray-300 text-gray-600 rounded-lg shadow outline-none"
+                readOnly
+              />
+
+              {/* Buttons */}
+              <div className="flex justify-end gap-4 mt-6">
+                <button className="bg-buttonColor px-5 py-2 rounded-3xl cursor-pointer hover:bg-transparent hover:text-black transition-all duration-300 ease-in-out border-4 border-buttonColor text-white">
+                  Save
+                </button>
+                <button className="border-4 border-buttonColor hover:text-white hover:bg-buttonColor transition-all duration-300 px-5 py-2 rounded-3xl">
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
