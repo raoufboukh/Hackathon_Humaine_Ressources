@@ -1,0 +1,11 @@
+<!-- templates/employees/leave_request_form.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Leave Request</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

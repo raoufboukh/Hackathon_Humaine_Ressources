@@ -2,14 +2,67 @@ from django.db import models
 from django.contrib.auth.models import User
 from decimal import Decimal
 
-from employees.models import Attendance, Employee
-from .calculators import SalaireCalculator
+from employees.models import  Employee, LeaveRequest,  LeaveType
+from .calculators import SalaireCalculator, Prime as PrimeCalculator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
+
+class CompanyPolicy(models.Model):
+    """Model to store company-specific HR policies"""
+    name = models.CharField(max_length=100)
+    pay_frequency = models.CharField(
+        max_length=20,
+        choices=[
+            ('hourly', 'Per Hour'),
+            ('daily', 'Per Day'),
+            ('monthly', 'Monthly Salary')
+        ],
+        default='monthly'
+    )
+    overtime_calculation = models.CharField(
+        max_length=20,
+        choices=[
+            ('fixed', 'Fixed Rate'),
+            ('progressive', 'Progressive Rate'),
+            ('none', 'No Overtime')
+        ],
+        default='fixed'
+    )
+    leave_policy = models.CharField(
+        max_length=20,
+        choices=[
+            ('standard', 'Standard Leave Policy'),
+            ('flexible', 'Flexible Leave Policy'),
+            ('custom', 'Custom Leave Policy')
+        ],
+        default='standard'
+    )
+    tax_calculation_method = models.CharField(
+        max_length=20,
+        choices=[
+            ('standard', 'Standard Tax'),
+            ('simplified', 'Simplified Tax'),
+            ('custom', 'Custom Tax Rules')
+        ],
+        default='standard'
+    )
+
+    def __str__(self):
+        return self.name
+
+class EmployeeFingerprint(models.Model):
+    """Model to store fingerprint data for each employee"""
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, related_name='fingerprint')
+    fingerprint_id = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return f"{self.employee.name}'s Fingerprint"
+
 class Attendance(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='attendances')
+    fingerprint = models.ForeignKey(EmployeeFingerprint, on_delete=models.CASCADE, null=True, blank=True)
     clock_in = models.DateTimeField()
     clock_out = models.DateTimeField(null=True, blank=True)
     status = models.CharField(
@@ -18,16 +71,75 @@ class Attendance(models.Model):
             ('present', 'Present'),
             ('absent', 'Absent'),
             ('late', 'Late'),
+            ('half_day', 'Half Day'),
+            ('work_from_home', 'Work From Home')
         ],
         default='present'
     )
-
+    notes = models.TextField(blank=True)
+    
     def calculate_hours_worked(self):
+        """Calculate total hours worked with validation"""
         if not self.clock_out:
-            return 0
+            return Decimal('0.00')
+        if self.clock_out < self.clock_in:
+            raise ValidationError("Clock out time cannot be before clock in time")
         delta = self.clock_out - self.clock_in
-        return round(delta.total_seconds() / 3600, 2)
-
+        return Decimal(str(round(delta.total_seconds() / 3600, 2)))
+    
+    def calculate_overtime_hours(self):
+        """Calculate overtime hours based on company policy"""
+        company_policy = self.employee.company_policy
+        regular_hours = 8  # Default workday hours
+        
+        if company_policy.pay_frequency == 'hourly':
+            hours_worked = self.calculate_hours_worked()
+            return max(Decimal('0.00'), hours_worked - regular_hours)
+        return Decimal('0.00')
+    
+    def is_late(self):
+        """Check if employee was late based on schedule"""
+        # You can customize this based on company's start time
+        work_start_time = self.clock_in.replace(hour=9, minute=0)
+        return self.clock_in > work_start_time
+    
+    def clean(self):
+        """Validate attendance data"""
+        super().clean()
+        if self.clock_out and self.clock_out < self.clock_in:
+            raise ValidationError("Clock out must be after clock in time")
+        
+        # Check for overlapping attendance records
+        overlapping = Attendance.objects.filter(
+            employee=self.employee,
+            clock_in__date=self.clock_in.date()
+        ).exclude(pk=self.pk)
+        
+        if overlapping.exists():
+            raise ValidationError("Employee already has attendance record for this date")
+    
+    class Meta:
+        ordering = ['-clock_in']
+        indexes = [
+            models.Index(fields=['employee', 'clock_in']),
+            models.Index(fields=['status'])
+        ]
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(clock_out__isnull=True) | models.Q(clock_out__gt=models.F('clock_in')),
+                name='valid_clock_out_time'
+            )
+        ]
+    
+    def save(self, *args, **kwargs):
+        """Auto-update status based on attendance"""
+        if not self.status:
+            if self.is_late():
+                self.status = 'late'
+            else:
+                self.status = 'present'
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.employee} - {self.clock_in.date()}"
     
@@ -35,7 +147,7 @@ class LeaveType(models.Model):
     name = models.CharField(max_length=100)
     days_allowed = models.PositiveIntegerField()
     requires_approval = models.BooleanField(default=True)
-
+    
     def __str__(self):
         return self.name
 class LeaveBalance(models.Model):
@@ -48,16 +160,16 @@ class LeaveBalance(models.Model):
         unique_together = ['user', 'leave_type', 'year']
 
 class Prime(models.Model):
-    nom = models.CharField(max_length=100)
-    montant = models.DecimalField(max_digits=10, decimal_places=2)
-    imposable = models.BooleanField()
-    cotisable = models.BooleanField()
+    name = models.CharField(max_length=100)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    taxable = models.BooleanField(default=True)
+    contributable = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nom
+        return self.name
 # Absence and Leave Management
 class LeaveRequest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='employee_leave_requests')  # added related_name to fix the clash
     leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -97,6 +209,7 @@ class LeaveRequest(models.Model):
             raise ValidationError("You have overlapping approved leaves")
 
 class PayrollComponent(models.Model):
+    """Enhanced PayrollComponent with policy-based calculations"""
     name = models.CharField(max_length=100)
     type = models.CharField(
         max_length=20,
@@ -107,57 +220,116 @@ class PayrollComponent(models.Model):
     )
     is_taxable = models.BooleanField(default=True)
     is_fixed = models.BooleanField(default=True)
+    calculation_method = models.CharField(
+        max_length=20,
+        choices=[
+            ('fixed', 'Fixed Amount'),
+            ('percentage', 'Percentage of Base'),
+            ('formula', 'Custom Formula')
+        ],
+        default='fixed'
+    )
+    calculation_formula = models.TextField(
+        null=True, 
+        blank=True,
+        help_text="Python expression for custom calculations"
+    )
     
-    def __str__(self):
-        return f"{self.name} ({self.get_type_display()})"
+    def calculate_amount(self, base_amount, policy):
+        """Calculate component amount based on policy and method"""
+        if self.calculation_method == 'fixed':
+            return self.fixed_amount
+        elif self.calculation_method == 'percentage':
+            return base_amount * (self.percentage_value / 100)
+        elif self.calculation_method == 'formula':
+            # Safe eval of formula with context
+            return self._evaluate_formula(base_amount, policy)
+        return 0
     
+
+class PayrollPrime(models.Model):
+    payroll = models.ForeignKey('Payroll', on_delete=models.CASCADE)
+    prime = models.ForeignKey('Prime', on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        unique_together = ['payroll', 'prime']
 # Payroll Management
 class Payroll(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    salaire_base = models.DecimalField(max_digits=10, decimal_places=2)
-    primes = models.ManyToManyField('Prime', blank=True)
-    net_salary = models.DecimalField(max_digits=10, decimal_places=2, editable=False, default=0)
-    created_at = models.DateTimeField(default=timezone.now)
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('calculated', 'Calculated'),
+        ('approved', 'Approved'),
+        ('paid', 'Paid')
+    ]
 
-    def calculate_net_salary(self):
-        from .calculators import SalaireCalculator
-        calculator = SalaireCalculator(self.salaire_base, list(self.primes.all()))
-        return calculator.calculer_salaire_net()
+    employee = models.ForeignKey('employees.Employee', on_delete=models.CASCADE,related_name='payrolls')
+    company_policy = models.ForeignKey('CompanyPolicy', on_delete=models.PROTECT)
+    period_start = models.DateField()
+    period_end = models.DateField()
+    base_salary = models.DecimalField(max_digits=10, decimal_places=2)
+    net_salary = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    # Policy-dependent fields
+    work_units = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        help_text="Hours or Days based on policy"
+    )
+    unit_rate = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="Rate per hour/day based on policy"
+    )
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.net_salary = self.calculate_net_salary()
-        super().save(*args, **kwargs)
+    def calculate_base_pay(self):
+        """Calculate base pay according to company policy"""
+        if self.company_policy.pay_frequency == 'hourly':
+            return self.work_units * self.unit_rate
+        elif self.company_policy.pay_frequency == 'daily':
+            return self.work_units * self.unit_rate
+        else:
+            return self.base_salary
 
-    def __str__(self):
-        return f"Payroll for {self.user.username}"
-    def calculate_hours_and_overtime(self):
-        attendances = Attendance.objects.filter(
-            employee=self.employee,
-            clock_in__date__range=[self.period_start, self.period_end]
+    def calculate_overtime(self):
+        """Calculate overtime based on policy"""
+        if self.company_policy.overtime_calculation == 'none':
+            return 0
+        # Implement different overtime calculations based on policy
+        return self._calculate_policy_based_overtime()
+
+    def calculate_taxes(self):
+        """Calculate taxes based on policy"""
+        if self.company_policy.tax_calculation_method == 'standard':
+            return self._calculate_standard_tax()
+        elif self.company_policy.tax_calculation_method == 'simplified':
+            return self._calculate_simplified_tax()
+        else:
+            return self._calculate_custom_tax()
+    def calculate_net_pay(self):
+        primes = []
+        for payroll_prime in self.payrollprime_set.all():
+            prime = payroll_prime.prime
+            primes.append(PrimeCalculator(
+                montant=payroll_prime.amount,
+                cotisable=prime.contributable,
+                imposable=prime.taxable
+            ))
+
+        salaire_calculator = SalaireCalculator(
+            salaire_base=self.base_salary,
+            primes=primes
         )
-        total_hours = sum(att.calculate_hours_worked() for att in attendances)
-        total_overtime = sum(att.calculate_overtime_hours() for att in attendances)
-        return total_hours, total_overtime
 
-    def calculate_net_salary(self):
-        total_hours, overtime_hours = self.calculate_hours_and_overtime()
-        regular_hours = total_hours - overtime_hours
-        
-        # Calculate regular pay
-        hourly_rate = self.base_salary / (8 * 22)  # Assuming 22 working days
-        regular_pay = regular_hours * hourly_rate
-        
-        # Calculate overtime pay
-        overtime_pay = overtime_hours * self.overtime_rate
-        
-        gross_salary = regular_pay + overtime_pay
-        total_deductions = self.deductions + self.taxes
-        
-        self.overtime_hours = overtime_hours
-        self.net_salary = gross_salary - total_deductions
+        self.deductions = salaire_calculator.calculer_retenues_sociales()
+        self.taxes = salaire_calculator.calculer_irg()
+        self.net_salary = salaire_calculator.calculer_salaire_net()
         return self.net_salary
 
+    def save(self, *args, **kwargs):
+        self.calculate_net_pay()
+        super().save(*args, **kwargs)
+    
 class PayrollDetail(models.Model):
     payroll = models.ForeignKey(Payroll, on_delete=models.CASCADE)
     component = models.ForeignKey(PayrollComponent, on_delete=models.PROTECT)
@@ -204,7 +376,7 @@ class HRDocument(models.Model):
         return self.name
 
 class PerformanceReview(models.Model):
-    employee = models.ForeignKey(User, on_delete=models.CASCADE)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
     reviewer = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 
@@ -250,3 +422,4 @@ class Notification(models.Model):
     )
     related_object_id = models.PositiveIntegerField()
     related_object_type = models.CharField(max_length=100)
+
