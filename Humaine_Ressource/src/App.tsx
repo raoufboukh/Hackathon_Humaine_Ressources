@@ -15,7 +15,7 @@ import Login from "./components/Login";
 import Contact from "./components/Contact";
 import Service from "./components/Service";
 import About from "./components/About";
-import Admin from "./components/Admin/Admin";
+// import Admin from "./components/Admin/Admin";
 
 function App() {
   return (
@@ -44,7 +44,7 @@ function App() {
         <Route path="/Contact" element={<Contact />} />
         <Route path="/Service" element={<Service />} />
         <Route path="/About" element={<About />} />
-        <Route path="/admin" element={<Admin />} />
+        {/* <Route path="/admin" element={<Admin />} /> */}
 
         <Route path="/login" element={<Login />} />
       </Routes>

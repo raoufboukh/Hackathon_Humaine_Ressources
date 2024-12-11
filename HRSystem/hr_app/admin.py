@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import LeaveRequest, Payroll, HRDocument, Prime
+from .models import LeaveRequest, Payroll, HRDocument, PayrollPrime, Prime
 from django.contrib.admin import ModelAdmin
 from django.urls import path
 from django.http import JsonResponse
@@ -9,22 +9,20 @@ import json
 
 
 @admin.register(Prime)
-class PrimeAdmin(ModelAdmin):
-    list_display = ('nom', 'montant', 'imposable', 'cotisable') #1111111111111111111111111111
-    list_filter = ('imposable', 'cotisable')
-    search_fields = ('nom',)
-    ordering = ('nom',)
+class PrimeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'amount', 'taxable', 'contributable')
+    list_filter = ('taxable', 'contributable')
+    search_fields = ('name',)
 
 class PrimeInLine(admin.TabularInline):
-    model = Payroll.primes.through
+    model = PayrollPrime
     extra = 1
 
 @admin.register(LeaveRequest)
-class LeaveRequestAdmin(ModelAdmin):
-    list_display = ('user', 'start_date', 'end_date', 'status', 'duration_days')
-    list_filter = ('status', 'start_date')
-    search_fields = ('user__username', 'status')
-    ordering = ('-start_date',)
+class LeaveRequestAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'leave_type', 'start_date', 'end_date', 'status')  
+    list_filter = ('status', 'leave_type')
+    search_fields = ('user__username', 'user__first_name', 'user__last_name')
     date_hierarchy = 'start_date'
     
     def duration_days(self, obj):
@@ -33,13 +31,12 @@ class LeaveRequestAdmin(ModelAdmin):
 
 
 @admin.register(Payroll)
-class PayrollAdmin(ModelAdmin):
-    list_display = ('user', 'salaire_base', 'total_primes', 'net_salary', 'payment_status')
-    list_filter = ('user', 'created_at')
-    search_fields = ('user__username',)
+class PayrollAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'period_start', 'period_end', 'base_salary', 'net_salary', 'payment_status')
+    list_filter = ('employee', 'period_start', 'period_end')
+    search_fields = ('employee__user__username', 'employee__user__first_name', 'employee__user__last_name')
     readonly_fields = ('net_salary',)
-    inlines = [PrimeInLine]
-    exclude = ('primes',)
+
     
     def total_primes(self, obj):
         return sum(prime.montant for prime in obj.primes.all())

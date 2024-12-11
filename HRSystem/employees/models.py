@@ -49,6 +49,7 @@ class Employee(models.Model):
         ],
         default='active'
     )
+    base_salary = models.DecimalField(max_digits=10, decimal_places=2,null=True, default=0.00)
 
     def __str__(self):
         return f"{self.user.get_full_name()} ({self.employee_id})"
@@ -105,3 +106,57 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.clock_in.date()}"
+    
+# employees/models.py
+
+class LeaveType(models.Model):
+    """Types of leave available to employees"""
+    name = models.CharField(max_length=100)
+    days_allowed = models.PositiveIntegerField()
+    requires_approval = models.BooleanField(default=True)
+    is_paid = models.BooleanField(default=False)  # Indicates if the leave is paid
+    is_cnas_covered = models.BooleanField(default=False)  # Indicates if the leave is covered by CNAS
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+# employees/models.py
+
+class LeaveRequest(models.Model):
+    """Leave request management"""
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='employee_leaves_requests')
+    leave_type = models.ForeignKey(LeaveType, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    reason = models.TextField()
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected')
+        ],
+        default='pending'
+    )
+    approved_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='approved_leaves'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.start_date > self.end_date:
+            raise ValidationError("End date must be after start date")
+        if self.start_date < timezone.now().date():
+            raise ValidationError("Cannot request leave for past dates")
+
+    def is_paid_leave(self):
+        return self.leave_type.is_paid
+
+    def is_cnas_covered(self):
+        return self.leave_type.is_cnas_covered

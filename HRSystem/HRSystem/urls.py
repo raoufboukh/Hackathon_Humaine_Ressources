@@ -24,7 +24,7 @@ from hr_app.views import login_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('hr_app.urls')),
-    path('api/admin/', include('admin.urls')),  # Ajoutez cette ligne
+    # path('api/admin/', include('admin.urls')),  # Ajoutez cette ligne
     path('employees/', include('employees.urls')),
     path('', RedirectView.as_view(url='login/', permanent=False)),
     path('login/', login_view, name='login_view'),

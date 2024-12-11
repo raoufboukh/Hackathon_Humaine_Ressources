@@ -1,0 +1,13 @@
+<!-- templates/employees/leave_request_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Leave Request Details</h2>
+<p>Employee: {{ leave_request.employee }}</p>
+<p>Leave Type: {{ leave_request.leave_type }}</p>
+<p>Start Date: {{ leave_request.start_date }}</p>
+<p>End Date: {{ leave_request.end_date }}</p>
+<p>Reason: {{ leave_request.reason }}</p>
+<p>Status: {{ leave_request.status }}</p>
+<a href="{% url 'employees:leave_request_edit' leave_request.pk %}">Edit</a>
+{% endblock %}

@@ -18,8 +18,11 @@ const Login = () => {
       .post("http://127.0.0.1:8000/api/auth/login/", data)
       .then((res) => {
         console.log(res.data);
+        const { token } = res.data; // Assurez-vous que votre backend renvoie un `token`
+
+        localStorage.setItem("token", token); // Stockage du token dans localStorage
         if (res.data.username === "admin") {
-          navigate("/admin");
+          location.href = "http://127.0.0.1:8000/admin";
         } else {
           navigate("/employee");
         }
@@ -27,6 +30,7 @@ const Login = () => {
       .catch((err) => {
         console.error(err.response?.data || err.message); // Afficher l'erreur plus précisément
       });
+    axios.post("./Employee/Dashboard", data);
   };
 
   return (

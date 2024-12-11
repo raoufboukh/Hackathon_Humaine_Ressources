@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CgHome } from "react-icons/cg";
 import { CiCalendar } from "react-icons/ci";
 import { FaUser } from "react-icons/fa";
@@ -5,8 +6,34 @@ import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
+  const [info, setInfo] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("token");
+  console.log(token);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/employees/list/", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Ensure the token is being sent
+        },
+      })
+      .then((res) => {
+        setInfo(res.data.employees);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching employees:", err);
+        setError("Failed to fetch employees.");
+        setLoading(false);
+      });
+  }, [token]);
+
   return (
     <div className="dashboard max-w-[100vw]">
       <div className="bg-buttonColor basis-[22%] container py-10 text-white h-screen ml-0 ">
