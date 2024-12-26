@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CgHome } from "react-icons/cg";
 import { CiCalendar } from "react-icons/ci";
 import { FaUser } from "react-icons/fa";
@@ -6,58 +5,29 @@ import { IoDocumentTextSharp, IoLogOut } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
 import { RiBarChartFill } from "react-icons/ri";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useEmployeeData } from "./Effect";
 
 const Dashboard = () => {
-  const [info, setInfo] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { one: One } = useEmployeeData();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  // console.log(token);
-
-  useEffect(() => {
-    // const token = localStorage.getItem("token");
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    axios
-      .get("http://127.0.0.1:8000/employees/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        console.log("Employees fetched:", res.data); // Log the response data
-        setInfo(res.data.employees); // Set the employees data
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching employees:", err.response || err.message);
-        setError("Failed to fetch employees.");
-        setLoading(false);
-      });
-  }, [token]);
 
   return (
-    <div className="dashboard max-w-[100vw] h-[140vh] m-0 ">
-      <div className="bg-buttonColor basis-[22%] container py-10 text-white h-full ml-0 ">
+    <div className="dashboard max-w-[100vw] h-[140vh] m-0 basis-[22%]">
+      <div className="bg-buttonColor  container py-10 text-white h-full ml-0 ">
         <div className="flex gap-2 items-center">
           <div className="w-12 h-12 rounded-full bg-[#d9d9d9] flex items-center justify-center">
             <FaUser className="w-7 h-7 text-buttonColor" />
           </div>
           <div className="">
-            <h2 className="font-bold text-lg">Marie Dupont</h2>
+            <h2 className="font-bold text-lg">
+              {One?.first_name} {One?.last_name}
+            </h2>
             <p className="">Employee</p>
           </div>
         </div>
-        <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col  gap-11">
           <ul className="pt-10">
             {[
               { icon: <CgHome />, label: "Dashboard", to: "/dashboard" },
@@ -92,7 +62,10 @@ const Dashboard = () => {
           <ul className="">
             <li
               className="py-3 px-2 flex gap-3 items-center cursor-pointer text-[20px] hover:bg-white hover:text-buttonColor transition-all duration-300 w-full rounded-md"
-              onClick={(e) => {}}
+              onClick={() => {
+                localStorage.removeItem("token");
+                navigate("/login");
+              }}
             >
               <IoLogOut /> Logout
             </li>

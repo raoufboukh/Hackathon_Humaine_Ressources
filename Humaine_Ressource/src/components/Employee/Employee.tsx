@@ -3,13 +3,17 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa";
 import { PiWarningOctagon } from "react-icons/pi";
 import Dashboard from "./Dashboard";
+import { useEmployeeData } from "./Effect";
 const Employee = () => {
+  const { one: One } = useEmployeeData();
   return (
     <section className="flex">
       <Dashboard />
       <div className="basis-[78%] container py-10">
         <div className="flex items-center justify-between">
-          <h1 className="font-black text-3xl">Hello Marie Dupont!</h1>
+          <h1 className="font-black text-3xl">
+            Hello {One?.first_name} {One?.last_name}!
+          </h1>
           <IoIosNotificationsOutline className="text-4xl cursor-pointer" />
         </div>
         <div className="grid justify-start grid-cols-2 gap-4 py-10">

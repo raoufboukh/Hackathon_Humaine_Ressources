@@ -30,7 +30,8 @@ const Login = () => {
       .catch((err) => {
         console.error(err.response?.data || err.message); // Afficher l'erreur plus précisément
       });
-    axios.post("./Employee/Dashboard", data);
+    localStorage.removeItem("data");
+    localStorage.setItem("data", JSON.stringify(data));
   };
 
   return (
